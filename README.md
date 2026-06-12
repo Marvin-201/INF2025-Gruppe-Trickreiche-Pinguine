@@ -91,18 +91,26 @@ Geplante Projektstruktur:
 
 ```text
 src/
- ├── Main.java
- ├── rng/
- │    ├── RandomGenerator.java
- │    ├── LCG.java
- │    ├── MiddleSquareGenerator.java
- │    └── XORShiftGenerator.java
- ├── analysis/
- │    ├── HistogramAnalyzer.java
- │    ├── CorrelationAnalyzer.java
- │    └── Statistics.java
- └── ui/
-      ├── MainFrame.java
-      ├── HistogramPanel.java
-      └── ScatterPlotPanel.java
-      
+├── Main.java
+│
+├── rng/
+│   ├── RNG.java
+│   ├── LCG.java
+│   ├── MiddleSquareGenerator.java
+│   └── XORShiftGenerator.java
+│
+├── generator/
+│   └── RandomSequenceGenerator.java
+│
+├── analysis/
+│   ├── HistogramAnalyzer.java
+│   ├── CorrelationAnalyzer.java
+│   ├── Statistics.java
+│   └── PeriodAnalyzer.java
+│
+├── controller/
+│   └── SimulationController.java
+│
+└── ui/
+    ├── MainFrame.java
+    └── ControlPanel.java
