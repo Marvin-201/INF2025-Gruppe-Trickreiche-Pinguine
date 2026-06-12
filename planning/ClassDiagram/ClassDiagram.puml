@@ -1,26 +1,92 @@
-@startuml ClassDiagramRandom
+@startuml name
+title RNG Projekt - Architektur (Toolchain / Erstes Klassendiagramm)
 
-interface RandomNumberGenerator {
-    + name : String
-    + generateInt() : int
-    + generateDouble() : double
-    + getName() : String
+skinparam classAttributeIconSize 0
+
+' ==========================
+' RNG SCHICHT
+' ==========================
+
+interface RNG {
+    +nextDouble() : double
+    +reset(seed : long) : void
+    +getName() : String
 }
 
-class LinearCongruentialGenerator {
-    
+class LCG
+class MiddleSquareGenerator
+class XORShiftGenerator
+
+RNG <|.. LCG
+RNG <|.. MiddleSquareGenerator
+RNG <|.. XORShiftGenerator
+
+' ==========================
+' DATENGENERIERUNG
+' ==========================
+
+class RandomSequenceGenerator {
+    +generate(rng : RNG, count : int) : double[]
 }
 
-class MiddleSquareMethode {
+RandomSequenceGenerator --> RNG
 
+' ==========================
+' ANALYSE SCHICHT
+' ==========================
+
+class HistogramAnalyzer {
+    +createHistogram(values : double[], bins : int)
 }
 
-class XORShiftGenerator {
-
+class CorrelationAnalyzer {
+    +correlation(values : double[]) : double
 }
 
-LinearCongruentialGenerator ..|> RandomNumberGenerator
-MiddleSquareMethode ..|> RandomNumberGenerator
-XORShiftGenerator ..|> RandomNumberGenerator
+class Statistics {
+    +mean(values : double[]) : double
+    +variance(values : double[]) : double
+}
+
+class PeriodAnalyzer {
+    +estimatePeriod(rng : RNG, maxIterations : int) : long
+}
+
+PeriodAnalyzer --> RNG
+
+' ==========================
+' CONTROLLER (BUSINESS LOGIC)
+' ==========================
+
+class SimulationController {
+    +runSimulation(rng : RNG, sampleSize : int, bins : int)
+}
+
+SimulationController --> RNG
+SimulationController --> RandomSequenceGenerator
+SimulationController --> HistogramAnalyzer
+SimulationController --> CorrelationAnalyzer
+SimulationController --> Statistics
+SimulationController --> PeriodAnalyzer
+
+' ==========================
+' GUI SCHICHT (VIEW)
+' ==========================
+
+class MainFrame {
+    +onStartSimulation()
+    +updateView()
+}
+
+class ControlPanel {
+    +getSelectedRNG() : RNG
+    +getSampleSize() : int
+    +getBins() : int
+}
+
+MainFrame o-- ControlPanel
+MainFrame --> SimulationController : triggert Simulation
+
+ControlPanel --> RNG
 
 @enduml
