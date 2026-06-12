@@ -1,0 +1,19 @@
+# Java
+*.class
+
+# Build-Ordner
+bin/
+out/
+build/
+target/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# VS Code
+.vscode/
+
+# Betriebssystem
+.DS_Store
+Thumbs.db
