@@ -1,0 +1,16 @@
+@startuml ClassDiagramRandom
+
+interface RandomNumberGenerator {
+    + name : String
+    + generateInt() : int
+    + generateDouble() : double
+    + getName() : String
+}
+
+class LinearCongruentialGenerator IMPLEMENTATION RandomNumberGenerator {
+    - 
+}
+
+Person <|-- Student
+
+@enduml
