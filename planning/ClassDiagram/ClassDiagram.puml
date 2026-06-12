@@ -7,10 +7,20 @@ interface RandomNumberGenerator {
     + getName() : String
 }
 
-class LinearCongruentialGenerator IMPLEMENTATION RandomNumberGenerator {
-    - 
+class LinearCongruentialGenerator {
+    
 }
 
-Person <|-- Student
+class MiddleSquareMethode {
+
+}
+
+class XORShiftGenerator {
+
+}
+
+LinearCongruentialGenerator ..|> RandomNumberGenerator
+MiddleSquareMethode ..|> RandomNumberGenerator
+XORShiftGenerator ..|> RandomNumberGenerator
 
 @enduml
