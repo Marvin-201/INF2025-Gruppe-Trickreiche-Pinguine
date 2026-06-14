@@ -7,11 +7,6 @@ out/
 build/
 target/
 
-# VS Code Java project metadata
-.classpath
-.project
-.settings/
-
 # IntelliJ IDEA
 .idea/
 *.iml
