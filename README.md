@@ -112,6 +112,4 @@ src/
 │
 └── ui/
     ├── MainFrame.java
-    ├── ControlPanel.java
-    ├── HistogramPanel.java
-    └── ScatterPlotPanel.java
+    └── ControlPanel.java
