@@ -1,19 +1,24 @@
-# Java
+# Java class files
 *.class
 
-# Build-Ordner
+# Build output
 bin/
 out/
 build/
 target/
 
+# VS Code Java project metadata
+.classpath
+.project
+.settings/
+
 # IntelliJ IDEA
 .idea/
 *.iml
 
-# VS Code
+# VS Code workspace settings
 .vscode/
 
-# Betriebssystem
+# OS-specific files
 .DS_Store
 Thumbs.db
