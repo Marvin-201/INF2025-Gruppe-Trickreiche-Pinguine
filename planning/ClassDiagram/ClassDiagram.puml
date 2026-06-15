@@ -13,9 +13,15 @@ interface RNG {
     +getName() : String
 }
 
-class LCG
-class MiddleSquareGenerator
-class XORShiftGenerator
+class LCG{
+    -name : String
+}
+class MiddleSquareGenerator{
+    -name : String
+}
+class XORShiftGenerator{
+    -name : String
+}
 
 RNG <|.. LCG
 RNG <|.. MiddleSquareGenerator
@@ -41,6 +47,7 @@ class HistogramAnalyzer {
 
 class CorrelationAnalyzer {
     +correlation(values : double[]) : double
+    +createScatterData(double[] values) : Point[] 
 }
 
 class Statistics {
@@ -59,7 +66,7 @@ PeriodAnalyzer --> RNG
 ' ==========================
 
 class SimulationController {
-    +runSimulation(rng : RNG, sampleSize : int, bins : int)
+    +runSimulation(rng : RNG, sampleSize : int, bins : int) : SimulationResult
 }
 
 SimulationController --> RNG
@@ -68,6 +75,20 @@ SimulationController --> HistogramAnalyzer
 SimulationController --> CorrelationAnalyzer
 SimulationController --> Statistics
 SimulationController --> PeriodAnalyzer
+
+' ==========================
+' SIMULATION RESULT
+' ==========================
+
+class SimulationResult {
+    +values : double[]
+    +mean : double
+    +variance : double
+    +correlation : double
+    +period : long
+}
+
+SimulationController --> SimulationResult
 
 ' ==========================
 ' GUI SCHICHT (VIEW)
@@ -79,14 +100,12 @@ class MainFrame {
 }
 
 class ControlPanel {
-    +getSelectedRNG() : RNG
+    +getSelectedRNG() : String
     +getSampleSize() : int
     +getBins() : int
 }
 
-MainFrame o-- ControlPanel
+MainFrame *-- ControlPanel
 MainFrame --> SimulationController : triggert Simulation
-
-ControlPanel --> RNG
 
 @enduml
