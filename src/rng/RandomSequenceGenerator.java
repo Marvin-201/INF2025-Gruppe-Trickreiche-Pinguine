@@ -6,8 +6,7 @@ public class RandomSequenceGenerator            //Diese Klasse ist kein Generato
     private static final String NAME = "RandomSequenceGenerator";
 
     //Getter
-    @Override
-    Public String getName(){return NAME;}
+    public String getName(){return NAME;}
 
     public double[] generate (RNG rng, int count)
     {
