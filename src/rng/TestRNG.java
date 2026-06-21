@@ -2,15 +2,24 @@ package rng;
 
 import java.util.Arrays;
 
-public class TestRNG {
-    public static void main(String[] args) {
-        RNG rng = new LCG(12345);
-
+public class TestRNG
+{
+    public static void main(String[] args)                          //Der RandomSequenceGenerator braucht nur ein Objekt vom Typ RNG.
+                                                                    // Ob dahinter ein LCG oder ein MiddleSquareGenerator steckt,
+                                                                    // ist egal, weil beide das Interface RNG implementieren.
+    {
         RandomSequenceGenerator generator = new RandomSequenceGenerator();
 
-        double[] values = generator.generate(rng, 10);
+        RNG lcg=new LCG(12345);
+        double[] lcgValues = generator.generate(lcg, 10);
 
-        System.out.println(rng.getName());
-        System.out.println(Arrays.toString(values));
+        System.out.println(lcg.getName());
+        System.out.println(Arrays.toString(lcgValues));
+
+        RNG middleSquare = new MiddleSquareGenerator(1234);
+        double[] middleSquareValues = generator.generate(middleSquare, 10);
+
+        System.out.println(middleSquare.getName());
+        System.out.println(Arrays.toString(middleSquareValues));
     }
 }

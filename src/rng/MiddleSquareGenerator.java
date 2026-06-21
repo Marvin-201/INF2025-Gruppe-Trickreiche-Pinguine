@@ -4,7 +4,7 @@ public class MiddleSquareGenerator implements RNG {
 
     private static final String NAME = "Middle Square Generator";
 
-    private long seed;
+    private long seed;          //Generator speichert aktuellen Zustand
 
     public MiddleSquareGenerator(long seed) {
         this.seed = seed;
@@ -12,7 +12,7 @@ public class MiddleSquareGenerator implements RNG {
 
     @Override
     public double nextDouble() {
-        seed = seed * seed;
+        seed = seed * seed;             //seed²
 
         String number = Long.toString(seed);
 
