@@ -38,4 +38,5 @@ public class MiddleSquareGenerator implements RNG {
     public String getName() {
         return NAME;
     }
+
 }

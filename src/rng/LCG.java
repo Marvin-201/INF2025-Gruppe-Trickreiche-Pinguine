@@ -34,4 +34,3 @@ public class LCG implements RNG {
 
 
     }
-
