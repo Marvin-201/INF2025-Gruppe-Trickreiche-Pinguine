@@ -1,9 +1,14 @@
-package rng;
+package test.rng;
 
 import java.util.Arrays;
 import java.util.Scanner;
 
-public class TestRNG2
+import rng.LCG;
+import rng.MiddleSquareGenerator;
+import rng.RNG;
+import rng.RandomSequenceGenerator;
+
+public class RNGTest
 {
     public static void main(String[] args)                          //Der RandomSequenceGenerator braucht nur ein Objekt vom Typ RNG.
                                                                     // Ob dahinter ein LCG oder ein MiddleSquareGenerator steckt,
