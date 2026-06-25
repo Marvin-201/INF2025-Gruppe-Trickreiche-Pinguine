@@ -2,7 +2,6 @@ package test.rng;
 
 import java.util.Arrays;
 import java.util.Scanner;
-
 import rng.LCG;
 import rng.MiddleSquareGenerator;
 import rng.RNG;
@@ -18,7 +17,7 @@ public class RNGTest
 
         while (true)
         {
-            int zahl=0;
+            int zahl;
             System.out.println("Geben sie die Zahl ein:");
             Scanner scanner = new Scanner(System.in);
             zahl = scanner.nextInt();

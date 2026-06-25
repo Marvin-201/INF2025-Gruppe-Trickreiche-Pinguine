@@ -1,22 +1,22 @@
 package ui;
 
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.event.ActionListener;
 
 public class ControlPanel extends JPanel {
 
-    private JComboBox<String> generatorDropdown;
-    private JTextField amountField;
-    private JTextField seedField;
-    private JTextField binField;
-    private JButton startButton;
+    private final JComboBox<String> generatorDropdown;
+    private final JTextField amountField;
+    private final JTextField seedField;
+    private final JTextField binField;
+    private final JButton startButton;
 
     // Steuerungsbereich der GUI
     public ControlPanel() {
