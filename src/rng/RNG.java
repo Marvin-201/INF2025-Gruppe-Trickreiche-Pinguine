@@ -7,4 +7,6 @@ public interface RNG {              //Gemeinsame Schnittstelle
     void reset(long seed);
 
     String getName();
+
+    long getState(); //braucht man für Korrektheit beim Period Analyzer -- Gleitkommazahl Rundungsfehler können zu falschen Ausgaben führen
 }

@@ -31,4 +31,9 @@ public class LCG implements RNG {
     public void reset(long seed) {
         this.seed = seed;
     }
+
+    @Override
+    public long getState(){
+        return seed;
+    }
 }

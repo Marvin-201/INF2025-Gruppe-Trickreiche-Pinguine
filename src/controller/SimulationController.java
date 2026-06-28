@@ -1,6 +1,7 @@
 package controller;
 
 import analysis.HistogramAnalyzer;
+import analysis.PeriodAnalyzer;
 import rng.LCG;
 import rng.MiddleSquareGenerator;
 import rng.RNG;
@@ -47,8 +48,11 @@ public class SimulationController {
         //Histogramm-Analyse der erzeugten Zufallssequenz
         int[] histogramData = HistogramAnalyzer.createHistogram(randomSequence, bins);
 
+        //Periodenanalyse des Zufallszahlengenerators
+        int period = PeriodAnalyzer.analyze(rng, 1_000_000); // period = -1 bedeutet dass in den maxIterations keine periode gefunden wurde, in diesem Fall wären also die ersten 1_000_000 erzeugten Zahlen verschieden
+
         //initialisierung eines SimulationResults mit den erstellten Daten
-        SimulationResult simulationResult = new SimulationResult(randomSequence, 0, 0, 0, 0, histogramData);
+        SimulationResult simulationResult = new SimulationResult(randomSequence, 0, 0, 0, period, histogramData); 
 
         return simulationResult;
     }
