@@ -1,6 +1,6 @@
 package rng;
 
-public interface RNG {              //Gemeinsame Schnittschtelle
+public interface RNG {              //Gemeinsame Schnittstelle
 
     double nextDouble();
 
