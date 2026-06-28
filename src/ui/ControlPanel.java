@@ -33,7 +33,7 @@ public class ControlPanel extends JPanel {
         });
 
         JLabel amountLabel = new JLabel("Anzahl Werte:");
-        amountField = new JTextField("10");
+        amountField = new JTextField("1000");
 
         JLabel seedLabel = new JLabel("Seed:");
         seedField = new JTextField("12345");
