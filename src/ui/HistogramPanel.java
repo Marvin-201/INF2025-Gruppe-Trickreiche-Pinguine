@@ -50,7 +50,7 @@ public class HistogramPanel extends JPanel {
         int bottomPadding = 50;
 
         int chartWidth = panelWidth - leftPadding - rightPadding;
-        int chartHeight = panelHeight - topPadding - bottomPadding;
+        int chartHeight = panelHeight - topPadding - bottomPadding - 20;
 
         int barCount = histogramData.length;
         int barWidth = chartWidth / barCount;
