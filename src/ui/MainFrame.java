@@ -73,7 +73,7 @@ public class MainFrame extends JFrame {
 
             SimulationResult result = SimulationController.runSimulation(
                     controllerGeneratorName,
-                    seed,
+                    //seed,
                     amount,
                     bins
             );
