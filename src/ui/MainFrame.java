@@ -78,6 +78,11 @@ public class MainFrame extends JFrame {
                 controllerGeneratorName = "XORShiftGenerator";
             }
 
+            if ("Mersenne Twister".equals(selectedGenerator))
+            {
+                controllerGeneratorName = "MersenneTwister";
+            }
+
             SimulationResult result = SimulationController.runSimulation(
                     controllerGeneratorName,
                     seed,

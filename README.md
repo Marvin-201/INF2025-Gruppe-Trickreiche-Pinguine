@@ -42,6 +42,10 @@ Bei der Middle-Square-Methode wird eine Zahl quadriert. Aus der Mitte des Ergebn
 
 Der XORShift-Generator arbeitet mit Bitoperationen und Verschiebungen. Er ist einfach zu implementieren und kann schnell Zufallszahlen erzeugen.
 
+### Mersenne-Twister
+
+Der Mersenne-Twister MT19937 arbeitet mit einem internen Zustand aus 624 32-Bit-Werten. Er besitzt eine sehr große Periodenlänge von `2^19937 - 1` und erzeugt gleichmäßig verteilte Werte im Intervall `[0, 1)`.
+
 ## Analysefunktionen
 
 Die erzeugten Zufallszahlen sollen untersucht werden.
@@ -100,6 +104,7 @@ src/
 │   ├── MiddleSquareGenerator.java
 │   ├── XORShiftGenerator.java
 │   └── RandomSequenceGenerator.java
+|   |___MersenneTwister.java
 │
 ├── analysis/
 │   ├── HistogramAnalyzer.java

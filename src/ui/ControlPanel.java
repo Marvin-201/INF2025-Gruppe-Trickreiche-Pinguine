@@ -30,7 +30,8 @@ public class ControlPanel extends JPanel {
         generatorDropdown = new JComboBox<>(new String[]{
                 "LCG",
                 "Middle-Square",
-                "XOR Shift"
+                "XOR Shift",
+                "Mersenne Twister"
         });
 
         JLabel amountLabel = new JLabel("Anzahl Werte:");
