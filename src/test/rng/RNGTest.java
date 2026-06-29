@@ -2,10 +2,8 @@ package test.rng;
 
 import java.util.Arrays;
 import java.util.Scanner;
-import rng.LCG;
-import rng.MiddleSquareGenerator;
-import rng.RNG;
-import rng.RandomSequenceGenerator;
+
+import rng.*;
 
 public class RNGTest
 {
@@ -34,8 +32,13 @@ public class RNGTest
             System.out.println(middleSquare.getName());
             System.out.println(Arrays.toString(middleSquareValues));
 
+            RNG XORShift= new XORShiftGenerator(zahl);
+            double[] XORShiftGeneratorValues = generator.generate(XORShift, 10);
 
-            //Nächte Woche XORSchift
+            System.out.println(XORShift.getName());
+            System.out.println(Arrays.toString(XORShiftGeneratorValues));
+
+
         }
     }
 }

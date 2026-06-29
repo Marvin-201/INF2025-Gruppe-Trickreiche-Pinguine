@@ -10,6 +10,7 @@ public class SimulationControllerTest {
         //Aufrufen der Tests
         testLCGSimulation();
         testMiddleSquareSimulation();
+        testXORShiftSimulation();
         testInvalidGenerator();
         testInvalidParameters();
 
@@ -96,6 +97,44 @@ public class SimulationControllerTest {
         } */
         
     }
+    private static void testXORShiftSimulation() {
+
+        int sampleSize = 100;
+        int bins = 10;
+        int seed = 123457;
+
+        SimulationResult result = SimulationController.runSimulation("XORShiftGenerator", seed, sampleSize, bins);
+
+        // Prüft ob die Simulation ein Ergebnis zurückgegeben hat das nicht null ist
+        assertNotNull(result, "XORShift liefert Ergebnis");
+
+        // Prüft ob die Anzahl der erzeugten Zufallszahlen der angegebenen sampleSize entspricht
+        assertEquals(sampleSize, result.getValues().length, "XORShift Sequenzgröße");
+
+        // Prüft ob die Intervallanzahl der Histogrammanalyse mit dem angegebenen Wert bins übereinstimmt
+        assertEquals(bins, result.getHistogramData().length, "XORShift Histogrammgröße");
+
+        // Prüft ob die Periode einen gültigen Wert hat
+        assertTrue(result.getPeriod() == -1 || result.getPeriod() > 0, "XORShift Periodenwert gültig");
+        // schreibt alle erzeugten Zufallszahlen in die Konsole und anschließend die Anzahl der Zahlen die in jedem der Histogramm-Intervalle liegen. ZUR VERANSCHAULICHUNG
+        double[] values = result.getValues();
+        int[] histogramData = result.getHistogramData();
+
+        for (double value : values) {
+            System.out.println(value);
+        }
+
+        double i = 0.0;
+        double binWidth = 1.0/bins;
+
+        for (int binData : histogramData) {
+            System.out.printf("%.3f-%.3f: ", i, i + binWidth);
+            System.out.println(binData);
+            i += binWidth;
+        }
+
+    }
+
 
     // Testet den Fall dass ein ungültiger Generatorname in runSimulation übergeben wird
     private static void testInvalidGenerator() {
