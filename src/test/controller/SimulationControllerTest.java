@@ -33,6 +33,9 @@ public class SimulationControllerTest {
 
         // Prüft ob die Intervallanzahl der Histogrammanalyse mit dem angegebenen Wert bins übereinstimmt
         assertEquals(bins, result.getHistogramData().length, "LCG Histogrammgröße");
+
+        // Prüft ob die Periode einen gültigen Wert hat
+        assertTrue(result.getPeriod() == -1 || result.getPeriod() > 0, "LCG Periodenwert gültig");
         
         // schreibt alle erzeugten Zufallszahlen in die Konsole und anschließend die Anzahl der Zahlen die in jedem der Histogramm-Intervalle liegen. ZUR VERANSCHAULICHUNG
         /* double[] values = result.getValues();
@@ -70,6 +73,9 @@ public class SimulationControllerTest {
 
         // Prüft ob die Intervallanzahl der Histogrammanalyse mit dem angegebenen Wert bins übereinstimmt
         assertEquals(bins, result.getHistogramData().length, "MiddleSquare Histogrammgröße");
+
+        // Prüft ob die Periode einen gültigen Wert hat
+        assertTrue(result.getPeriod() == -1 || result.getPeriod() > 0, "MiddleSquare Periodenwert gültig");
 
          
         // schreibt alle erzeugten Zufallszahlen in die Konsole und anschließend die Anzahl der Zahlen die in jedem der Histogramm-Intervalle liegen. ZUR VERANSCHAULICHUNG
@@ -134,6 +140,10 @@ public class SimulationControllerTest {
         }
     }
 
+
+    // =========================== HILFSMETHODEN ===========================
+
+
     private static void assertEquals(int expected, int actual, String testName) {
 
         if (expected != actual) {
@@ -150,6 +160,17 @@ public class SimulationControllerTest {
         if (obj == null) {
 
             throw new AssertionError("\nTest fehlgeschlagen: " + testName + "\nObjekt ist null");
+        }
+
+        System.out.println("erfolgreicher Test: " + testName);
+    }
+
+    private static void assertTrue(boolean condition, String testName) {
+
+        if (!condition) {
+            throw new AssertionError(
+                "\nTest fehlgeschlagen: " + testName
+            );
         }
 
         System.out.println("erfolgreicher Test: " + testName);
