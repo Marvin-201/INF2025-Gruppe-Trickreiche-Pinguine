@@ -39,4 +39,9 @@ public class MiddleSquareGenerator implements RNG {
         return NAME;
     }
 
+    @Override
+    public long getState(){
+        return seed;
+    }
+
 }

@@ -1,7 +1,6 @@
 package application;
 
 import javax.swing.SwingUtilities;
-
 import ui.MainFrame;
 
 public class Application {
