@@ -29,7 +29,8 @@ public class ControlPanel extends JPanel {
         JLabel generatorLabel = new JLabel("Generator auswählen:");
         generatorDropdown = new JComboBox<>(new String[]{
                 "LCG",
-                "Middle-Square"
+                "Middle-Square",
+                "XOR Shift"
         });
 
         JLabel amountLabel = new JLabel("Anzahl Werte:");
