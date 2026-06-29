@@ -9,29 +9,32 @@ public class XORShiftGenerator implements RNG               //Generator
 
     public XORShiftGenerator(long seed)
     {
-        this.seed = seed;
-    }
-
-    @Override
-    public double nextDouble()          //Ja
+        this.seed = seed;                                               //XOR Arbeitsweise
+    }                                                                   // 0 | 0 = 0
+                                                                        // 0 | 1 = 1
+                                                                        // 1 | 0 = 1
+    @Override                                                           // 1 | 1 = 0
+    public double nextDouble()
+                                //0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0011 0000 0011 1001 = 12345
     {
-        seed ^= (seed << 13);               //bits verschieben
+        seed ^= (seed << 13);   //0000 0000 0000 0000 0000 0000 0000 0000 0000 0110 0000 0111 0010 0000 0000 0000 =
+        //Nach den XOR wird es    0000 0000 0000 0000 0000 0000 0000 0000 0000 0110 0000 0111 0001 0000 0011 1001
         seed ^= (seed >>> 7);
         seed ^= (seed << 17);
 
-        long positiveSeed = seed & Long.MAX_VALUE;          //Betrag operation
+        long positiveSeed = seed & Long.MAX_VALUE;
 
         return positiveSeed / (double) Long.MAX_VALUE;
     }
 
     @Override
-    public void reset(long seed)            //Ja
+    public void reset(long seed)
     {
         this.seed = seed;
     }
 
     @Override
-    public  String getName()                 //ja
+    public  String getName()
     {
         return NAME;
     }
