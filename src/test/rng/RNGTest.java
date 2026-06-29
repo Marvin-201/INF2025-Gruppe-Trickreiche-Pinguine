@@ -1,9 +1,13 @@
-package rng;
+package test.rng;
 
 import java.util.Arrays;
 import java.util.Scanner;
+import rng.LCG;
+import rng.MiddleSquareGenerator;
+import rng.RNG;
+import rng.RandomSequenceGenerator;
 
-public class TestRNG2
+public class RNGTest
 {
     public static void main(String[] args)                          //Der RandomSequenceGenerator braucht nur ein Objekt vom Typ RNG.
                                                                     // Ob dahinter ein LCG oder ein MiddleSquareGenerator steckt,
@@ -13,7 +17,7 @@ public class TestRNG2
 
         while (true)
         {
-            int zahl=0;
+            int zahl;
             System.out.println("Geben sie die Zahl ein:");
             Scanner scanner = new Scanner(System.in);
             zahl = scanner.nextInt();

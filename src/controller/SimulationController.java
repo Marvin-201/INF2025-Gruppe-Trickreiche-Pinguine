@@ -1,5 +1,55 @@
 package controller;
 
-public class SimulationController {
+import analysis.HistogramAnalyzer;
+import rng.LCG;
+import rng.MiddleSquareGenerator;
+import rng.RNG;
+import rng.RandomSequenceGenerator;
 
+public class SimulationController {   
+    public static SimulationResult runSimulation(String rngName, int seed, int sampleSize, int bins){
+
+        if (seed <= 0) {
+            throw new IllegalArgumentException("seed darf nicht 0 sein.");
+        }
+
+        if (sampleSize <= 0) {
+            throw new IllegalArgumentException("sampleSize muss größer als 0 sein.");
+        }
+
+        if (bins <= 0) {
+            throw new IllegalArgumentException("bins muss größer als 0 sein.");
+        }
+
+        RNG rng;
+
+        RandomSequenceGenerator randomSequenceGenerator = new RandomSequenceGenerator();
+
+        //initialisierung des angegebenen RNG
+        switch (rngName){
+            case "LCG":
+                rng = new LCG(seed);
+                break;
+            
+            case "MiddleSquareGenerator":
+                rng = new MiddleSquareGenerator(seed);
+                break;
+
+            default: 
+                throw new IllegalArgumentException(
+                    rngName + " ist kein valider Generatorenname!"
+                );
+        }
+
+        //generieren einer Sequenz von Zufallszahlen, der Länge sampleSize
+        double[] randomSequence = randomSequenceGenerator.generate(rng, sampleSize);
+
+        //Histogramm-Analyse der erzeugten Zufallssequenz
+        int[] histogramData = HistogramAnalyzer.createHistogram(randomSequence, bins);
+
+        //initialisierung eines SimulationResults mit den erstellten Daten
+        SimulationResult simulationResult = new SimulationResult(randomSequence, 0, 0, 0, 0, histogramData);
+
+        return simulationResult;
+    }
 }
