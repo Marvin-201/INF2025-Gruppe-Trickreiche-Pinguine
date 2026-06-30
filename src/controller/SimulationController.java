@@ -7,8 +7,9 @@ import analysis.ScatterPoint;
 import analysis.Statistics;
 import rng.LCG;
 import rng.MiddleSquareGenerator;
-import rng.RNG;
 import rng.RandomSequenceGenerator;
+import rng.XORShiftGenerator;
+import rng.RNG;
 
 public class SimulationController {   
     public static SimulationResult runSimulation(String rngName, int seed, int sampleSize, int bins){
@@ -37,6 +38,10 @@ public class SimulationController {
             
             case "MiddleSquareGenerator":
                 rng = new MiddleSquareGenerator(seed);
+                break;
+
+            case "XORShiftGenerator":
+                rng= new XORShiftGenerator(seed);
                 break;
 
             default: 
