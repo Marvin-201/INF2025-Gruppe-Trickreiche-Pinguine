@@ -1,7 +1,10 @@
 package controller;
 
+import analysis.CorrelationAnalyzer;
 import analysis.HistogramAnalyzer;
 import analysis.PeriodAnalyzer;
+import analysis.ScatterPoint;
+import analysis.Statistics;
 import rng.LCG;
 import rng.MiddleSquareGenerator;
 import rng.RNG;
@@ -48,11 +51,20 @@ public class SimulationController {
         //Histogramm-Analyse der erzeugten Zufallssequenz
         int[] histogramData = HistogramAnalyzer.createHistogram(randomSequence, bins);
 
+        //Mittelwert der erzeugten Werte wird berechnet -- 0,5 spricht für Gleichverteilung
+        double mean = Statistics.calculateMean(randomSequence);
+
+        //Varianz der erzeugten Werte wird berechnet
+        double variance = Statistics.calculateVariance(randomSequence);
+
+        //Erstellt die Korrelationsdaten der erzeugten Werte -- es sollte bei der Darstellung kein Muster erkennbar sein
+        ScatterPoint[] correlationData = CorrelationAnalyzer.createScatterData(randomSequence);
+
         //Periodenanalyse des Zufallszahlengenerators
         int period = PeriodAnalyzer.analyze(rng, 1_000_000); // period = -1 bedeutet dass in den maxIterations keine periode gefunden wurde, in diesem Fall wären also die ersten 1_000_000 erzeugten Zahlen verschieden
 
         //initialisierung eines SimulationResults mit den erstellten Daten
-        SimulationResult simulationResult = new SimulationResult(randomSequence, 0, 0, 0, period, histogramData); 
+        SimulationResult simulationResult = new SimulationResult(randomSequence, mean, variance, correlationData, period, histogramData); 
 
         return simulationResult;
     }
