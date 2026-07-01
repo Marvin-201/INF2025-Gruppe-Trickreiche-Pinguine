@@ -1,17 +1,17 @@
 package ui;
 
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 public class HistogramPanel extends JPanel {
 
     //Wie hoch die Balken sind, wird in diesem Array gespeichert.
     private int[] histogramData;
-    private JPanel chartPanel;
+    private final JPanel chartPanel;
 
     // Bereich für das Histogramm
     public HistogramPanel() {
