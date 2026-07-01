@@ -15,6 +15,8 @@ public class MersenneTwister implements RNG {
     private static final int s = 7;
     private static final int t = 15;
     private static final int l = 18;
+    private static final int b = 0x9D2C5680;;
+    private static final int c = 0xEFC60000;;
 
     private static final String NAME = "Mersenne Twister (MT19937)";
 
@@ -73,8 +75,8 @@ public class MersenneTwister implements RNG {
         //XOR und Verschiebeoperationen verteilen die Bits
 
         value ^= value >>> u;                   //Fülle Links mit 0 auf
-        value ^= (value << s) & 0x9D2C5680;
-        value ^= (value << t) & 0xEFC60000;
+        value ^= (value << s) & b;
+        value ^= (value << t) & c;
         value ^= value >>> l;
 
         generatedValues++;
