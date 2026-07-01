@@ -7,9 +7,9 @@ import rng.*;
 
 public class RNGTest
 {
-    public static void main(String[] args)                          //Der RandomSequenceGenerator braucht nur ein Objekt vom Typ RNG.
-                                                                    // Ob dahinter ein LCG oder ein MiddleSquareGenerator steckt,
-                                                                    // ist egal, weil beide das Interface RNG implementieren.
+    public static void main(String[] args)                          // Der RandomSequenceGenerator braucht nur ein Objekt vom Typ RNG.
+                                                                    // Ob dahinter LCG, MiddleSquare, XORShift oder MersenneTwister
+                                                                    // steckt, ist egal, weil alle das Interface RNG implementieren.
     {
         RandomSequenceGenerator generator = new RandomSequenceGenerator();
 
@@ -22,7 +22,6 @@ public class RNGTest
 
             RNG lcg=new LCG(zahl);
             double[] lcgValues = generator.generate(lcg, 10);
-
             System.out.println(lcg.getName());
             System.out.println(Arrays.toString(lcgValues));
 
@@ -38,7 +37,14 @@ public class RNGTest
             System.out.println(XORShift.getName());
             System.out.println(Arrays.toString(XORShiftGeneratorValues));
 
+            RNG mersenneTwister = new MersenneTwister(zahl);
+            double[] mersenneTwisterValues = generator.generate(mersenneTwister, 10);
+
+            System.out.println(mersenneTwister.getName());
+            System.out.println(Arrays.toString(mersenneTwisterValues));
+
 
         }
+
     }
 }
