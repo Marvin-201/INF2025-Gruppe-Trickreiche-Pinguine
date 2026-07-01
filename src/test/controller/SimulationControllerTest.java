@@ -11,6 +11,7 @@ public class SimulationControllerTest {
         testLCGSimulation();
         testMiddleSquareSimulation();
         testXORShiftSimulation();
+        testMersenneTwisterSimulation();
         testInvalidGenerator();
         testInvalidParameters();
 
@@ -120,6 +121,57 @@ public class SimulationControllerTest {
         double[] values = result.getValues();
         int[] histogramData = result.getHistogramData();
 
+        /*for (double value : values) {
+            System.out.println(value);
+        }
+
+        double i = 0.0;
+        double binWidth = 1.0/bins;
+
+        for (int binData : histogramData) {
+            System.out.printf("%.3f-%.3f: ", i, i + binWidth);
+            System.out.println(binData);
+            i += binWidth;
+        }
+        */
+    }
+
+    private static void testMersenneTwisterSimulation()
+    {
+        int sampleSize = 100;
+        int bins = 10;
+        int seed = 123457;
+
+        SimulationResult result = SimulationController.runSimulation(
+                "MersenneTwister", seed, sampleSize, bins
+        );
+
+        // Prüft, ob die Simulation ein Ergebnis zurückgegeben hat, das nicht null ist
+        assertNotNull(result, "MersenneTwister liefert Ergebnis");
+
+        // Prüft, ob die Anzahl der erzeugten Zufallszahlen der sampleSize entspricht
+        assertEquals(
+                sampleSize,
+                result.getValues().length,
+                "MersenneTwister Sequenzgröße"
+        );
+
+        // Prüft, ob die Anzahl der Histogramm-Intervalle dem Wert bins entspricht
+        assertEquals(
+                bins,
+                result.getHistogramData().length,
+                "MersenneTwister Histogrammgröße"
+        );
+
+        // Prüft, ob die Periodenanalyse einen gültigen Wert zurückgibt
+        assertTrue(
+                result.getPeriod() == -1 || result.getPeriod() > 0,
+                "MersenneTwister Periodenwert gültig"
+        );
+        // schreibt alle erzeugten Zufallszahlen in die Konsole und anschließend die Anzahl der Zahlen die in jedem der Histogramm-Intervalle liegen. ZUR VERANSCHAULICHUNG
+        double[] values = result.getValues();
+        int[] histogramData = result.getHistogramData();
+
         for (double value : values) {
             System.out.println(value);
         }
@@ -132,9 +184,7 @@ public class SimulationControllerTest {
             System.out.println(binData);
             i += binWidth;
         }
-
     }
-
 
     // Testet den Fall dass ein ungültiger Generatorname in runSimulation übergeben wird
     private static void testInvalidGenerator() {

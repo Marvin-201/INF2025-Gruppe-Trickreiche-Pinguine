@@ -3,6 +3,7 @@ package controller;
 import analysis.HistogramAnalyzer;
 import analysis.PeriodAnalyzer;
 import rng.LCG;
+import rng.MersenneTwister;
 import rng.MiddleSquareGenerator;
 import rng.RandomSequenceGenerator;
 import rng.XORShiftGenerator;
@@ -39,6 +40,10 @@ public class SimulationController {
 
             case "XORShiftGenerator":
                 rng= new XORShiftGenerator(seed);
+                break;
+
+            case "MersenneTwister":
+                rng = new MersenneTwister(seed);
                 break;
 
             default: 
