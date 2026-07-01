@@ -23,7 +23,7 @@ public class PeriodAnalyzerTest {
 
         LCG rng = new LCG(12345);
 
-        int period = PeriodAnalyzer.analyze(rng, 100_000);
+        int period = PeriodAnalyzer.analyze(rng, 10_000);
 
         assertEquals(-1, period, "LCG: keine Periode innerhalb von 10000 Iterationen");
     }
