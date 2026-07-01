@@ -9,6 +9,7 @@ import javax.swing.SwingConstants;
 
 public class HistogramPanel extends JPanel {
 
+    //Wie hoch die Balken sind, wird in diesem Array gespeichert.
     private int[] histogramData;
     private final JPanel chartPanel;
 
@@ -17,7 +18,7 @@ public class HistogramPanel extends JPanel {
         setLayout(new BorderLayout());
 
         JLabel titleLabel = new JLabel("Histogramm-Bereich", SwingConstants.CENTER);
-
+        // Panel, in dem das Histogramm gezeichnet wird
         chartPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -30,17 +31,21 @@ public class HistogramPanel extends JPanel {
         add(chartPanel, BorderLayout.CENTER);
     }
 
+    // Methode zum Neuzeichnen des Histogramms 
     public void setHistogramData(int[] histogramData) {
         this.histogramData = histogramData;
         chartPanel.repaint();
     }
 
+    // Methode zum Zeichnen des Histogramms
     private void drawHistogram(Graphics g) {
+        //Prüfen, ob daten vorhanden sind
         if (histogramData == null || histogramData.length == 0) {
             g.drawString("Hier wird später das Histogramm angezeigt.", 30, 30);
             return;
         }
 
+        // Berechnung der darstellung der Histogramms
         int panelWidth = chartPanel.getWidth();
         int panelHeight = chartPanel.getHeight();
 
@@ -56,16 +61,17 @@ public class HistogramPanel extends JPanel {
         int barWidth = chartWidth / barCount;
 
         int maxValue = 0;
+        // Maximalwert im Histogramm
         for (int value : histogramData) {
             if (value > maxValue) {
                 maxValue = value;
             }
         }
-
+        
         if (maxValue == 0) {
             return;
         }
-
+        // Koordinaten für die Achsen
         int xAxisY = panelHeight - bottomPadding;
         int yAxisX = leftPadding;
 
@@ -76,9 +82,9 @@ public class HistogramPanel extends JPanel {
 
         // Y-Achse beschriften
         g.drawString("Häufigkeit", 10, topPadding - 15);
-
+        
         int ySteps = 5;
-
+        
         for (int i = 0; i <= ySteps; i++) {
             int value = (maxValue * i) / ySteps;
             int y = xAxisY - (int) ((value / (double) maxValue) * chartHeight);

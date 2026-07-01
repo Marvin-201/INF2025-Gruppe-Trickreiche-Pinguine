@@ -45,6 +45,7 @@ public class MainFrame extends JFrame {
             int seed = Integer.parseInt(controlPanel.getSeedText());
             int bins = Integer.parseInt(controlPanel.getBinText());
 
+            // Validierung der Eingaben
             if (amount <= 0) {
                 JOptionPane.showMessageDialog(this, "Die Anzahl der Werte muss größer als 0 sein.");
                 return;
