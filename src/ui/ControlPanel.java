@@ -18,6 +18,9 @@ public class ControlPanel extends JPanel {
     private JTextField binField;
     private JButton startButton;
 
+    private final JLabel meanValueLabel;
+    private final JLabel varianceValueLabel;
+
     // Steuerungsbereich der GUI
     public ControlPanel() {
         setPreferredSize(new Dimension(250, 700));
@@ -43,6 +46,12 @@ public class ControlPanel extends JPanel {
 
         startButton = new JButton("Simulation starten");
 
+        JLabel meanLabel = new JLabel("Mittelwert:");
+        meanValueLabel = new JLabel("-");
+
+        JLabel varianceLabel = new JLabel("Varianz:");
+        varianceValueLabel = new JLabel("-");
+
         add(titleLabel);
         add(generatorLabel);
         add(generatorDropdown);
@@ -53,6 +62,11 @@ public class ControlPanel extends JPanel {
         add(binLabel);
         add(binField);
         add(startButton);
+
+        add(meanLabel);
+        add(meanValueLabel);
+        add(varianceLabel);
+        add(varianceValueLabel);
     }
 
     public String getSelectedGenerator() {
@@ -74,4 +88,12 @@ public class ControlPanel extends JPanel {
     public void addStartButtonListener(ActionListener listener) {
         startButton.addActionListener(listener);
     }
+<<<<<<< Updated upstream
+=======
+
+    public void setStatistics(double mean, double variance) {
+        meanValueLabel.setText(String.format("%.6f", mean));
+        varianceValueLabel.setText(String.format("%.6f", variance));
+    }
+>>>>>>> Stashed changes
 }
