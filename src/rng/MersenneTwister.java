@@ -1,13 +1,11 @@
 package rng;
 
-/*
- Implementierung des 32-Bit-Mersenne-Twisters MT19937.
-
- Der Generator arbeitet mit einem internen Zustand aus 624 Integer-Werten.
- Nach jeweils 624 Ausgaben wird dieser Zustand in twist() neu gemischt.
-
-    Hilfreich ist vor dem Anschauen von meinem Code dieses YouTube Video zu anschauen:
-    https://www.youtube.com/watch?v=bd7k037zykY
+/**
+ * Implementierung des 32-Bit-Mersenne-Twisters MT19937.
+ *
+ * <p>Der Code ist in der Reihenfolge angeordnet, in der der Generator arbeitet:
+ * Zustand aus dem Seed aufbauen, eine Zahl anfordern, bei Bedarf den Zustand
+ * erneuern und zuletzt die Bits der Zahl mischen (Tempering).</p>
  */
 public class MersenneTwister implements RNG {
 
@@ -20,132 +18,174 @@ public class MersenneTwister implements RNG {
 
     private static final String NAME = "Mersenne Twister (MT19937)";
 
-    // Größe des internen Zustands des MT19937.
-    private static final int last = 624;
+    /*
+     * Festgelegte Parameter des Algorithmus MT19937:
+     *
+     * w = 32: Ein Zustandswert hat 32 Bits.
+     * n = 624: Der Zustand besteht aus 624 Werten.
+     * m = 397: Beim Twist wird ein Wert 397 Stellen weiter verwendet.
+     *
+     * Die übrigen Konstanten sind Bitmasken und Verschiebungen aus der
+     * Definition von MT19937. Sie wurden nicht im Programm ausgerechnet,
+     * sondern bestimmen genau diese Variante des Mersenne-Twisters.
+     */
+    private static final int STATE_SIZE = 624;             // n
+    private static final int TWIST_OFFSET = 397;           // m
+    private static final int TWIST_MATRIX = 0x9908B0DF;    // a
 
-    // Abstand zu einem weiteren Zustandswert beim Twist-Schritt.
-    private static final int generatedNumbers = 397;
+    private static final int UPPER_BIT_MASK = 0x80000000;
+    private static final int LOWER_31_BITS_MASK = 0x7FFFFFFF;
 
-    private static final int MATRIX_A = 0x9908B0DF;
+    private static final int TEMPER_SHIFT_U = 11;          // u
+    private static final int TEMPER_SHIFT_S = 7;           // s
+    private static final int TEMPER_MASK_B = 0x9D2C5680;   // b
+    private static final int TEMPER_SHIFT_T = 15;          // t
+    private static final int TEMPER_MASK_C = 0xEFC60000;   // c
+    private static final int TEMPER_SHIFT_L = 18;          // l
 
-    // Masken zum Trennen des höchsten Bits von den unteren 31 Bits
-    private static final int topBorder = 0x80000000;
-    private static final int bottomBorder = 0x7FFFFFFF;
+    private static final int SEED_MULTIPLIER = 1812433253;
 
-    // Anzahl aller möglichen vorzeichenlosen 32-Bit-Werte: 2³²
+    // 2^32 mögliche Bitmuster werden auf das Intervall [0, 1) abgebildet.
     private static final double UINT_32_RANGE = 4294967296.0;
 
-    // Enthält den vollständigen internen Zustand des Generators
-    private final int[] state = new int[last];
+    // Der vollständige interne Zustand des Generators.
+    private final int[] state = new int[STATE_SIZE];
 
-    // Position des nächsten zu Zustandswerts.
+    // Zeigt auf den Zustandswert, der als Nächstes ausgegeben wird.
     private int index;
 
-    // Anzahl der Werte, die seit dem letzten reset() erzeugt wurden
+    // Anzahl der seit dem letzten reset() ausgegebenen Werte.
     private long generatedValues;
 
-    // Der Konstruktor baut aus dem übregebenen Seed den Anfangszustand auf
+    /**
+     * Erstellt den Generator und baut aus dem Seed den ersten Zustand auf.
+     */
     public MersenneTwister(long seed) {
         reset(seed);
     }
 
-    @Override
-    public double nextDouble() {
-        /*
-          nextInt() erzeugt ein 32-Bit-Bitmuster. Int wird in einen positiven long
-          umgewandelt. Durch die Division durch 2^32 entsteht ein double im Intervall [0, 1)
-         */
-        return Integer.toUnsignedLong(nextInt()) / UINT_32_RANGE;
-    }
-
-    private int nextInt() {
-        /*
-         Wenn alle 624 Zustandswerte verbraucht sind, muss zuerst ein neuer
-         Zustand berechnet werden. Nach reset() ist index ebenfalls 624,
-         damit twist() auch vor der ersten Ausgabe ausgeführt wird
-         */
-        if (index >= last) {
-            twist();
-        }
-
-        // Nächsten unbearbeiteten Wert aus dem Zustand lesen
-        int value = state[index++];
-
-
-        //XOR und Verschiebeoperationen verteilen die Bits
-
-        value ^= value >>> u;                   //Fülle Links mit 0 auf
-        value ^= (value << s) & b;
-        value ^= (value << t) & c;
-        value ^= value >>> l;
-
-        generatedValues++;
-        return value;
-    }
-
-    private void twist()
-    {
-         /*
-         Aus den bisherigen 624 Werten wird ein vollständig neuer Zustand
-         aufgebaut. Der Wert 2 ist das Ergebniss aus der Rechnung mit Wert 1
-         */
-        for (int i = 0; i < last; i++)
-        {
-            /*
-             Das höchste Bit von state[i] wird mit den unteren 31 Bits des
-             nächsten Werts verbunden. Modulo sorgt dafür, dass nach dem
-             letzten Arrayelement wieder das erste verwendet wird.
-             */
-            int combined = (state[i] & topBorder)
-                    | (state[(i + 1) % last] & bottomBorder);
-
-            // Mit dem 397 Positionen entfernten Zustandswert verknüpfen.
-            int next = state[(i + generatedNumbers) % last] ^ (combined >>> 1);
-
-
-            if ((combined & 1) != 0) // Bei einer ungeraden Kombination wird MATRIX_A eingerechnet
-            {
-                next ^= MATRIX_A;
-            }
-
-            state[i] = next;
-        }
-
-
-        index = 0;
-    }
-
+    /**
+     * Schritt 1: Aus dem Seed werden alle 624 Werte des Zustands berechnet.
+     */
     @Override
     public void reset(long seed) {
-
+        // MT19937 verwendet einen 32-Bit-Seed. Daher zählen nur die unteren 32 Bits.
         state[0] = (int) seed;
 
-        /*
-         Aus dem Seed werden die restlichen 623 Zustandswerte berechnet.
-         int überläufe sind wie Mod 2³²
-         */
-
-        for (int i = 1; i < last; i++)
-        {
+        for (int i = 1; i < STATE_SIZE; i++) {
             int previous = state[i - 1];
-            state[i] = 1812433253 * (previous ^ (previous >>> 30)) + i;
+
+            /*
+             * Rekursionsformel zur Initialisierung:
+             * state[i] = 1812433253 * (previous XOR (previous >>> 30)) + i
+             *
+             * Ein Java-int läuft bei Bedarf über. Dieser Überlauf entspricht
+             * dem von MT19937 verlangten Rechnen modulo 2^32.
+             */
+            state[i] = SEED_MULTIPLIER
+                    * (previous ^ (previous >>> 30))
+                    + i;
         }
 
-        // Vor der nächsten Ausgabe muss der neue Zustand getwistet werden.
-        index = last;
-
+        /*
+         * Der initialisierte Zustand ist noch nicht getwistet. STATE_SIZE sorgt
+         * dafür, dass vor der ersten Ausgabe in nextInt32() twist() aufgerufen wird.
+         */
+        index = STATE_SIZE;
         generatedValues = 0;
     }
 
+    /**
+     * Schritt 2: Liefert die nächste Zufallszahl im Intervall [0, 1).
+     */
     @Override
-    public String getName()
-    {
+    public double nextDouble() {
+        int randomBits = nextInt32();
+
+        /*
+         * Java-int ist vorzeichenbehaftet. Die Umwandlung in long interpretiert
+         * dasselbe 32-Bit-Muster als Zahl von 0 bis 2^32 - 1. Nach der Division
+         * durch 2^32 liegt das Ergebnis zwischen 0 einschließlich und 1 ausschließlich.
+         */
+        long unsignedValue = Integer.toUnsignedLong(randomBits);
+        return unsignedValue / UINT_32_RANGE;
+    }
+
+    /**
+     * Schritt 3: Holt einen 32-Bit-Wert aus dem Zustand.
+     */
+    private int nextInt32() {
+        // Nach 624 Ausgaben muss zuerst ein neuer Zustandsblock berechnet werden.
+        if (index >= STATE_SIZE) {
+            twist();
+        }
+
+        int rawValue = state[index];
+        index++;
+
+        generatedValues++;
+        return temper(rawValue);
+    }
+
+    /**
+     * Schritt 4: Berechnet aus den bisherigen 624 Werten einen neuen Zustand.
+     */
+    private void twist() {
+        for (int i = 0; i < STATE_SIZE; i++) {
+            int nextIndex = (i + 1) % STATE_SIZE;
+            int offsetIndex = (i + TWIST_OFFSET) % STATE_SIZE;
+
+            /*
+             * Das höchste Bit von state[i] und die unteren 31 Bits des
+             * Folgewerts werden zu einem neuen 32-Bit-Wert zusammengesetzt.
+             */
+            int combined = (state[i] & UPPER_BIT_MASK)
+                    | (state[nextIndex] & LOWER_31_BITS_MASK);
+
+            /*
+             * Der zusammengesetzte Wert wird durch 2 geteilt (logischer
+             * Rechtsshift) und mit dem 397 Positionen entfernten Wert verknüpft.
+             */
+            int twistedValue = state[offsetIndex] ^ (combined >>> 1);
+
+            /*
+             * Ist combined ungerade, war sein niedrigstes Bit 1. Dieses Bit
+             * geht beim Rechtsshift verloren und wird durch TWIST_MATRIX
+             * entsprechend der MT19937-Formel berücksichtigt.
+             */
+            if ((combined & 1) == 1) {
+                twistedValue ^= TWIST_MATRIX;
+            }
+
+            state[i] = twistedValue;
+        }
+
+        // Der nächste Aufruf liest wieder beim ersten Wert des neuen Zustands.
+        index = 0;
+    }
+
+    /**
+     * Schritt 5: Verteilt die Bits eines Zustandswerts besser (Tempering).
+     */
+    private int temper(int value) {
+        /*
+         * >>> schiebt Nullen von links hinein. Bei den beiden Linksshifts
+         * begrenzen die Masken, welche verschobenen Bits übernommen werden.
+         */
+        value ^= value >>> TEMPER_SHIFT_U;
+        value ^= (value << TEMPER_SHIFT_S) & TEMPER_MASK_B;
+        value ^= (value << TEMPER_SHIFT_T) & TEMPER_MASK_C;
+        value ^= value >>> TEMPER_SHIFT_L;
+        return value;
+    }
+
+    @Override
+    public String getName() {
         return NAME;
     }
 
     @Override
-    public long getState()
-    {
+    public long getState() {
         return generatedValues;
     }
 }

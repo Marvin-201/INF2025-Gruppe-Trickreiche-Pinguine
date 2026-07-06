@@ -9,14 +9,15 @@ import java.awt.BorderLayout;
 
 public class MainFrame extends JFrame {
 
-    private ControlPanel controlPanel;
-    private HistogramPanel histogramPanel;
-    private ScatterPlotPanel scatterPlotPanel;
+    private final ControlPanel controlPanel;
+    private final HistogramPanel histogramPanel;
+    private final ScatterPlotPanel scatterPlotPanel;
 
     // Hauptfenster der Anwendung.
     public MainFrame() {
         setTitle("Zufallszahlengeneratoren und Verteilungsanalyse");
-        setSize(1000, 700);
+        setSize(1200, 800);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -39,7 +40,8 @@ public class MainFrame extends JFrame {
 
     private void startSimulation() {
         try {
-            String selectedGenerator = controlPanel.getSelectedGenerator();
+            String firstGenerator = controlPanel.getFirstSelectedGenerator();
+            String secondGenerator = controlPanel.getSecondSelectedGenerator();
 
             int amount = Integer.parseInt(controlPanel.getAmountText());
             int seed = Integer.parseInt(controlPanel.getSeedText());
@@ -61,40 +63,32 @@ public class MainFrame extends JFrame {
                 return;
             }
 
-            /*
-             * Im Dropdown steht "Middle-Square".
-             * Der SimulationController erwartet aktuell aber "MiddleSquareGenerator".
-             * Deshalb wird der Name hier angepasst.
-             */
-            String controllerGeneratorName = selectedGenerator;
-
-            if ("Middle-Square".equals(selectedGenerator))
-            {
-                controllerGeneratorName = "MiddleSquareGenerator";
-            }
-
-
-            if("XOR Shift".equals(selectedGenerator))
-            {
-                controllerGeneratorName = "XORShiftGenerator";
-            }
-
-            if ("Mersenne Twister".equals(selectedGenerator))
-            {
-                controllerGeneratorName = "MersenneTwister";
-            }
-
-            SimulationResult result = SimulationController.runSimulation(
-                    controllerGeneratorName,
+            SimulationResult firstResult = SimulationController.runSimulation(
+                    getControllerGeneratorName(firstGenerator),
                     seed,
                     amount,
                     bins
             );
 
+            SimulationResult secondResult = SimulationController.runSimulation(
+                    getControllerGeneratorName(secondGenerator),
+                    seed,
+                    amount,
+                    bins
+            );
 
-            histogramPanel.setHistogramData(result.getHistogramData());
-            scatterPlotPanel.setScatterData(result.getCorrelation());
-            controlPanel.setStatistics(result.getMean(), result.getVariance());
+            histogramPanel.setComparisonData(
+                    firstGenerator,
+                    firstResult,
+                    secondGenerator,
+                    secondResult
+            );
+            scatterPlotPanel.setComparisonData(
+                    firstGenerator,
+                    firstResult.getCorrelation(),
+                    secondGenerator,
+                    secondResult.getCorrelation()
+            );
 
         } catch (NumberFormatException exception) {
             JOptionPane.showMessageDialog(
@@ -103,6 +97,22 @@ public class MainFrame extends JFrame {
             );
         } catch (IllegalArgumentException exception) {
             JOptionPane.showMessageDialog(this, exception.getMessage());
+        }
+    }
+
+    /**
+     * Übersetzt die Namen aus der GUI in die Namen des Controllers.
+     */
+    private String getControllerGeneratorName(String displayName) {
+        switch (displayName) {
+            case "Middle-Square":
+                return "MiddleSquareGenerator";
+            case "XOR Shift":
+                return "XORShiftGenerator";
+            case "Mersenne Twister":
+                return "MersenneTwister";
+            default:
+                return displayName;
         }
     }
 }
