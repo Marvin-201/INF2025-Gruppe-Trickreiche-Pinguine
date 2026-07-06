@@ -2,16 +2,21 @@ package ui;
 
 import controller.SimulationController;
 import controller.SimulationResult;
-
+import export.CSVExporter;
+import java.awt.BorderLayout;
+import java.io.File;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import java.awt.BorderLayout;
+import util.NumberConverter;
 
 public class MainFrame extends JFrame {
 
     private final ControlPanel controlPanel;
     private final HistogramPanel histogramPanel;
     private final ScatterPlotPanel scatterPlotPanel;
+    private SimulationResult firstResult;
+    private SimulationResult secondResult;
 
     // Hauptfenster der Anwendung.
     public MainFrame() {
@@ -36,6 +41,9 @@ public class MainFrame extends JFrame {
 
         // Wenn der Startbutton geklickt wird, wird die Simulation gestartet.
         controlPanel.addStartButtonListener(e -> startSimulation());
+
+        // Wenn der Exportbutton geklickt wird, wird die Methode aufgerufen
+        controlPanel.addExportButtonListener(e -> exportCSV());
     }
 
     private void startSimulation() {
@@ -46,6 +54,8 @@ public class MainFrame extends JFrame {
             int amount = Integer.parseInt(controlPanel.getAmountText());
             int seed = Integer.parseInt(controlPanel.getSeedText());
             int bins = Integer.parseInt(controlPanel.getBinText());
+            int min = Integer.parseInt(controlPanel.getMinimumText());
+            int max = Integer.parseInt(controlPanel.getMaximumText());
 
             // Validierung der Eingaben
             if (amount <= 0) {
@@ -63,14 +73,29 @@ public class MainFrame extends JFrame {
                 return;
             }
 
-            SimulationResult firstResult = SimulationController.runSimulation(
+            if (min < 0) {
+                JOptionPane.showMessageDialog(this, "Der minimale Wert der ausgegeben werden soll muss größer als 0 sein.");
+                return;
+            }
+
+            if (min >= max) {
+                JOptionPane.showMessageDialog(this, "Der Minimalwert muss kleiner als der Maximalwert sein.");
+                return;
+            }
+
+            if (max - min < 2) {
+                JOptionPane.showMessageDialog(this, "Minimal- und Maximalwert müssen mindestens um 2 auseinander liegen.");
+                return;
+            }
+
+            firstResult = SimulationController.runSimulation(
                     getControllerGeneratorName(firstGenerator),
                     seed,
                     amount,
                     bins
             );
 
-            SimulationResult secondResult = SimulationController.runSimulation(
+            secondResult = SimulationController.runSimulation(
                     getControllerGeneratorName(secondGenerator),
                     seed,
                     amount,
@@ -115,4 +140,72 @@ public class MainFrame extends JFrame {
                 return displayName;
         }
     }
+
+    private void exportCSV() {
+
+        if (firstResult == null || secondResult == null) {
+            JOptionPane.showMessageDialog(this, "Bitte zuerst eine Simulation starten.");
+            return;
+        }
+
+        JFileChooser chooser = new JFileChooser();
+
+        if (chooser.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+
+
+        File file = chooser.getSelectedFile();
+
+
+        try {
+
+            if (controlPanel.isIntegerMode()) {
+
+                int min = Integer.parseInt(controlPanel.getMinimumText());
+                int max = Integer.parseInt(controlPanel.getMaximumText());
+
+
+                int[] firstValues =
+                        NumberConverter.convertToIntegers(
+                                firstResult.getValues(),
+                                min,
+                                max
+                        );
+
+
+                int[] secondValues =
+                        NumberConverter.convertToIntegers(
+                                secondResult.getValues(),
+                                min,
+                                max
+                        );
+
+
+                CSVExporter.exportIntegerComparison(
+                        firstValues,
+                        secondValues,
+                        file
+                );
+
+
+            } else {
+
+                CSVExporter.exportDoubleComparison(
+                        firstResult.getValues(),
+                        secondResult.getValues(),
+                        file
+                );
+            }
+
+
+            JOptionPane.showMessageDialog(this, "CSV-Datei erfolgreich exportiert.");
+
+
+        } catch (Exception exception) {
+
+            JOptionPane.showMessageDialog(this, "Fehler beim Export: " + exception.getMessage());
+        }
+    }
+    
 }

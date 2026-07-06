@@ -21,10 +21,21 @@ public class ControlPanel extends JPanel {
 
     private final JComboBox<String> firstGeneratorDropdown;
     private final JComboBox<String> secondGeneratorDropdown;
+
     private final JTextField amountField;
     private final JTextField seedField;
     private final JTextField binField;
+
+    private final JComboBox<String> numberModeDropdown;
+
+    private final JLabel minLabel;
+    private final JLabel maxLabel;
+
+    private final JTextField minField;
+    private final JTextField maxField;
+    
     private final JButton startButton;
+    private final JButton exportButton;
 
     // Steuerungsbereich der GUI
     public ControlPanel() {
@@ -47,6 +58,7 @@ public class ControlPanel extends JPanel {
         updateSecondGeneratorOptions();
         firstGeneratorDropdown.addActionListener(e -> updateSecondGeneratorOptions());
 
+
         JLabel amountLabel = new JLabel("Anzahl Werte:");
         amountField = new JTextField("1000");
 
@@ -56,7 +68,28 @@ public class ControlPanel extends JPanel {
         JLabel binLabel = new JLabel("Histogramm-Balken:");
         binField = new JTextField("10");
 
+        JLabel modeLabel = new JLabel("Ausgabe:");
+        numberModeDropdown = new JComboBox<>(new String[]{"Kommazahlen", "Ganzzahlen"});
+
+
+        minLabel = new JLabel("Minimum:");
+        minField = new JTextField("0");
+
+        maxLabel = new JLabel("Maximum:");
+        maxField = new JTextField("100");
+
+        minLabel.setVisible(false);
+        minField.setVisible(false);
+
+        maxLabel.setVisible(false);
+        maxField.setVisible(false);
+
+
+        numberModeDropdown.addActionListener(e -> updateNumberMode());
+
         startButton = new JButton("Generatoren vergleichen");
+
+        exportButton = new JButton("CSV exportieren");
 
         add(titleLabel);
         add(firstGeneratorLabel);
@@ -69,7 +102,14 @@ public class ControlPanel extends JPanel {
         add(seedField);
         add(binLabel);
         add(binField);
+        add(modeLabel);
+        add(numberModeDropdown);
+        add(minLabel);
+        add(minField);
+        add(maxLabel);
+        add(maxField);
         add(startButton);
+        add(exportButton);
     }
 
     private void updateSecondGeneratorOptions() {
@@ -94,12 +134,40 @@ public class ControlPanel extends JPanel {
         }
     }
 
+    // zeigt nur bei Auswahl von Ganzzahl die Felder max und min an
+    private void updateNumberMode() {
+
+        boolean integerMode =
+                numberModeDropdown.getSelectedItem().equals("Ganzzahlen");
+
+        minLabel.setVisible(integerMode);
+        minField.setVisible(integerMode);
+
+        maxLabel.setVisible(integerMode);
+        maxField.setVisible(integerMode);
+
+        revalidate();
+        repaint();
+    }
+
     public String getFirstSelectedGenerator() {
         return (String) firstGeneratorDropdown.getSelectedItem();
     }
 
     public String getSecondSelectedGenerator() {
         return (String) secondGeneratorDropdown.getSelectedItem();
+    }
+
+    public boolean isIntegerMode() {
+    return numberModeDropdown.getSelectedItem().equals("Ganzzahlen");
+    }
+
+    public String getMinimumText() {
+        return minField.getText();
+    }
+
+    public String getMaximumText() {
+        return maxField.getText();
     }
 
     public String getAmountText() {
@@ -116,5 +184,9 @@ public class ControlPanel extends JPanel {
 
     public void addStartButtonListener(ActionListener listener) {
         startButton.addActionListener(listener);
+    }
+
+    public void addExportButtonListener(ActionListener listener) {
+        exportButton.addActionListener(listener);
     }
 }
