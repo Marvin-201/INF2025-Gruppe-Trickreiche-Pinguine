@@ -9,6 +9,13 @@ package rng;
  */
 public class MersenneTwister implements RNG {
 
+    private static final int u = 11;            //Variablen für die Formel
+    private static final int s = 7;
+    private static final int t = 15;
+    private static final int l = 18;
+    private static final int b = 0x9D2C5680;;
+    private static final int c = 0xEFC60000;;
+
     private static final String NAME = "Mersenne Twister (MT19937)";
 
     /*
