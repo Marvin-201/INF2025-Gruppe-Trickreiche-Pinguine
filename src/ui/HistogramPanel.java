@@ -19,8 +19,8 @@ public class HistogramPanel extends JPanel {
     private int[] firstHistogramData;
     private int[] secondHistogramData;
 
-    private final JLabel firstStatisticsLabel;
-    private final JLabel secondStatisticsLabel;
+    private final StatisticsPanel firstStatisticsPanel;
+    private final StatisticsPanel secondStatisticsPanel;
     private final JLabel differenceLabel;
     private final JPanel chartPanel;
 
@@ -32,16 +32,16 @@ public class HistogramPanel extends JPanel {
                 SwingConstants.CENTER
         );
 
-        firstStatisticsLabel = createStatisticsLabel(FIRST_COLOR);
-        secondStatisticsLabel = createStatisticsLabel(SECOND_COLOR);
+        firstStatisticsPanel = new StatisticsPanel(FIRST_COLOR);
+        secondStatisticsPanel = new StatisticsPanel(SECOND_COLOR);
         differenceLabel = new JLabel(
                 "Nach dem Start werden hier die Unterschiede angezeigt.",
                 SwingConstants.CENTER
         );
 
         JPanel statisticsColumns = new JPanel(new GridLayout(1, 2, 10, 0));
-        statisticsColumns.add(firstStatisticsLabel);
-        statisticsColumns.add(secondStatisticsLabel);
+        statisticsColumns.add(firstStatisticsPanel);
+        statisticsColumns.add(secondStatisticsPanel);
 
         JPanel comparisonHeader = new JPanel(new BorderLayout(0, 5));
         comparisonHeader.setBorder(BorderFactory.createEmptyBorder(8, 10, 8, 10));
@@ -61,13 +61,6 @@ public class HistogramPanel extends JPanel {
         add(chartPanel, BorderLayout.CENTER);
     }
 
-    private JLabel createStatisticsLabel(Color color) {
-        JLabel label = new JLabel("Noch keine Daten", SwingConstants.CENTER);
-        label.setForeground(color);
-        label.setBorder(BorderFactory.createLineBorder(color, 2));
-        return label;
-    }
-
     /**
      * Übernimmt beide Ergebnisse gleichzeitig, damit immer derselbe Lauf
      * miteinander verglichen und gemeinsam gezeichnet wird.
@@ -81,8 +74,8 @@ public class HistogramPanel extends JPanel {
         firstHistogramData = firstResult.getHistogramData();
         secondHistogramData = secondResult.getHistogramData();
 
-        firstStatisticsLabel.setText(createStatisticsText(firstName, firstResult));
-        secondStatisticsLabel.setText(createStatisticsText(secondName, secondResult));
+        firstStatisticsPanel.setStatistics(firstName, firstResult);
+        secondStatisticsPanel.setStatistics(secondName, secondResult);
 
         double meanDifference = Math.abs(firstResult.getMean() - secondResult.getMean());
         double varianceDifference =
@@ -95,22 +88,6 @@ public class HistogramPanel extends JPanel {
         ));
 
         chartPanel.repaint();
-    }
-
-    private String createStatisticsText(String name, SimulationResult result) {
-        String periodText = result.getPeriod() < 0
-                ? "nicht gefunden"
-                : String.format("%.0f", result.getPeriod());
-
-        return String.format(
-                "<html><div style='text-align:center'><b>%s</b><br>"
-                        + "Mittelwert: %.6f &nbsp; Varianz: %.6f &nbsp; Periode: %s"
-                        + "</div></html>",
-                name,
-                result.getMean(),
-                result.getVariance(),
-                periodText
-        );
     }
 
     private void drawHistogram(Graphics g) {
@@ -269,5 +246,48 @@ public class HistogramPanel extends JPanel {
             return 10;
         }
         return 20;
+    }
+
+
+    private static class StatisticsPanel extends JPanel {
+
+        private final JLabel nameLabel;
+        private final JLabel meanLabel;
+        private final JLabel varianceLabel;
+        private final JLabel periodLabel;
+
+        StatisticsPanel(Color color) {
+            setLayout(new BorderLayout(0, 4));
+            setBorder(BorderFactory.createLineBorder(color, 2));
+
+            nameLabel = new JLabel("Noch keine Daten", SwingConstants.CENTER);
+            nameLabel.setForeground(color);
+            nameLabel.setFont(nameLabel.getFont().deriveFont(
+                    nameLabel.getFont().getStyle() | java.awt.Font.BOLD
+            ));
+
+            meanLabel = new JLabel("Mittelwert: -", SwingConstants.CENTER);
+            varianceLabel = new JLabel("Varianz: -", SwingConstants.CENTER);
+            periodLabel = new JLabel("Periode: -", SwingConstants.CENTER);
+
+            JPanel valuePanel = new JPanel(new GridLayout(1, 3));
+            valuePanel.add(meanLabel);
+            valuePanel.add(varianceLabel);
+            valuePanel.add(periodLabel);
+
+            add(nameLabel, BorderLayout.NORTH);
+            add(valuePanel, BorderLayout.CENTER);
+        }
+
+        void setStatistics(String name, SimulationResult result) {
+            String periodText = result.getPeriod() < 0
+                    ? "nicht gefunden"
+                    : String.format("%.0f", result.getPeriod());
+
+            nameLabel.setText(name);
+            meanLabel.setText(String.format("Mittelwert: %.6f", result.getMean()));
+            varianceLabel.setText(String.format("Varianz: %.6f", result.getVariance()));
+            periodLabel.setText("Periode: " + periodText);
+        }
     }
 }
