@@ -93,6 +93,8 @@ public class MainFrame extends JFrame {
 
 
             histogramPanel.setHistogramData(result.getHistogramData());
+            scatterPlotPanel.setScatterData(result.getCorrelation());
+            controlPanel.setStatistics(result.getMean(), result.getVariance());
 
         } catch (NumberFormatException exception) {
             JOptionPane.showMessageDialog(
