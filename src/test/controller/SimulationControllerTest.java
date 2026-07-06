@@ -102,7 +102,7 @@ public class SimulationControllerTest {
 
         int sampleSize = 100;
         int bins = 10;
-        int seed = 123457;
+        int seed = 12345;
 
         SimulationResult result = SimulationController.runSimulation("XORShiftGenerator", seed, sampleSize, bins);
 
