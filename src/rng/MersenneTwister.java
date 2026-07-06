@@ -11,7 +11,7 @@ package rng;
  */
 public class MersenneTwister implements RNG {
 
-    private static final int u = 11;            //Variablem für die Formel
+    private static final int u = 11;            //Variablen für die Formel
     private static final int s = 7;
     private static final int t = 15;
     private static final int l = 18;

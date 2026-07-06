@@ -25,7 +25,14 @@ public class SimulationControllerTest {
         int bins = 10;
         int seed = 123457;
 
+        long start = System.nanoTime();
+
         SimulationResult result = SimulationController.runSimulation("LCG", seed, sampleSize, bins);
+
+        long end = System.nanoTime();
+        double durationMs = (end - start) / 1_000_000.0;
+
+        System.out.printf("LCG benötigte %.3f ms%n", durationMs);
 
         // Prüft ob die Simulation ein Ergebnis zurückgegeben hat das nicht null ist
         assertNotNull(result, "LCG liefert Ergebnis");
@@ -65,7 +72,14 @@ public class SimulationControllerTest {
         int bins = 10;
         int seed = 123457;
 
+        long start = System.nanoTime();
+
         SimulationResult result = SimulationController.runSimulation("MiddleSquareGenerator", seed, sampleSize, bins);
+
+        long end = System.nanoTime();
+        double durationMs = (end - start) / 1_000_000.0;
+
+        System.out.printf("MiddleSquareGenerator benötigte %.3f ms%n", durationMs);
 
         // Prüft ob die Simulation ein Ergebnis zurückgegeben hat das nicht null ist
         assertNotNull(result, "MiddleSquare liefert Ergebnis");
@@ -104,7 +118,14 @@ public class SimulationControllerTest {
         int bins = 10;
         int seed = 12345;
 
+        long start = System.nanoTime();
+
         SimulationResult result = SimulationController.runSimulation("XORShiftGenerator", seed, sampleSize, bins);
+
+        long end = System.nanoTime();
+        double durationMs = (end - start) / 1_000_000.0;
+
+        System.out.printf("XORShiftGenerator benötigte %.3f ms%n", durationMs);
 
         // Prüft ob die Simulation ein Ergebnis zurückgegeben hat das nicht null ist
         assertNotNull(result, "XORShift liefert Ergebnis");
@@ -142,9 +163,14 @@ public class SimulationControllerTest {
         int bins = 10;
         int seed = 123457;
 
-        SimulationResult result = SimulationController.runSimulation(
-                "MersenneTwister", seed, sampleSize, bins
-        );
+        long start = System.nanoTime();
+
+        SimulationResult result = SimulationController.runSimulation("MersenneTwister", seed, sampleSize, bins);
+
+        long end = System.nanoTime();
+        double durationMs = (end - start) / 1_000_000.0;
+
+        System.out.printf("MersenneTwister benötigte %.3f ms%n", durationMs);
 
         // Prüft, ob die Simulation ein Ergebnis zurückgegeben hat, das nicht null ist
         assertNotNull(result, "MersenneTwister liefert Ergebnis");

@@ -5,12 +5,16 @@ import analysis.HistogramAnalyzer;
 import analysis.PeriodAnalyzer;
 import analysis.ScatterPoint;
 import analysis.Statistics;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import rng.LCG;
 import rng.MersenneTwister;
 import rng.MiddleSquareGenerator;
+import rng.RNG;
 import rng.RandomSequenceGenerator;
 import rng.XORShiftGenerator;
-import rng.RNG;
 
 public class SimulationController {   
     public static SimulationResult runSimulation(String rngName, int seed, int sampleSize, int bins){
@@ -28,6 +32,7 @@ public class SimulationController {
         }
 
         RNG rng;
+        RNG periodRng;
 
         RandomSequenceGenerator randomSequenceGenerator = new RandomSequenceGenerator();
 
@@ -35,18 +40,22 @@ public class SimulationController {
         switch (rngName){
             case "LCG":
                 rng = new LCG(seed);
+                periodRng = new LCG(seed);
                 break;
             
             case "MiddleSquareGenerator":
                 rng = new MiddleSquareGenerator(seed);
+                periodRng = new MiddleSquareGenerator(seed);
                 break;
 
             case "XORShiftGenerator":
                 rng= new XORShiftGenerator(seed);
+                periodRng = new XORShiftGenerator(seed);
                 break;
 
             case "MersenneTwister":
                 rng = new MersenneTwister(seed);
+                periodRng = new MersenneTwister(seed);
                 break;
 
             default: 
@@ -55,27 +64,53 @@ public class SimulationController {
                 );
         }
 
+
+
         //generieren einer Sequenz von Zufallszahlen, der Länge sampleSize
         double[] randomSequence = randomSequenceGenerator.generate(rng, sampleSize);
 
-        //Histogramm-Analyse der erzeugten Zufallssequenz
-        int[] histogramData = HistogramAnalyzer.createHistogram(randomSequence, bins);
 
-        //Mittelwert der erzeugten Werte wird berechnet -- 0,5 spricht für Gleichverteilung
-        double mean = Statistics.calculateMean(randomSequence);
 
-        //Varianz der erzeugten Werte wird berechnet
-        double variance = Statistics.calculateVariance(randomSequence);
+        //Berechnen der Analysen mit Multithreading
+        ExecutorService executor = Executors.newFixedThreadPool(5);
 
-        //Erstellt die Korrelationsdaten der erzeugten Werte -- es sollte bei der Darstellung kein Muster erkennbar sein
-        ScatterPoint[] correlationData = CorrelationAnalyzer.createScatterData(randomSequence);
+        try {
+            Future<int[]> histogramFuture = executor.submit(() ->
+                    HistogramAnalyzer.createHistogram(randomSequence, bins));
 
-        //Periodenanalyse des Zufallszahlengenerators
-        int period = PeriodAnalyzer.analyze(rng, 1_000_000); // period = -1 bedeutet dass in den maxIterations keine periode gefunden wurde, in diesem Fall wären also die ersten 1_000_000 erzeugten Zahlen verschieden
+            Future<Double> meanFuture = executor.submit(() ->
+                    Statistics.calculateMean(randomSequence));
 
-        //initialisierung eines SimulationResults mit den erstellten Daten
-        SimulationResult simulationResult = new SimulationResult(randomSequence, mean, variance, correlationData, period, histogramData); 
+            Future<Double> varianceFuture = executor.submit(() ->
+                    Statistics.calculateVariance(randomSequence));
 
-        return simulationResult;
+            Future<ScatterPoint[]> correlationFuture = executor.submit(() ->
+                    CorrelationAnalyzer.createScatterData(randomSequence));
+
+            // Für die Periodenanalyse besser eine neue RNG-Instanz verwenden!
+            
+
+            Future<Integer> periodFuture = executor.submit(() ->
+                    PeriodAnalyzer.analyze(periodRng, 1_000_000));
+
+            // Ergebnisse abholen
+            int[] histogramData = histogramFuture.get();
+            double mean = meanFuture.get();
+            double variance = varianceFuture.get();
+            ScatterPoint[] correlationData = correlationFuture.get();
+            int period = periodFuture.get();
+
+            return new SimulationResult(randomSequence, mean, variance, correlationData, period, histogramData);
+
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("Simulation wurde unterbrochen.", e);
+
+        } catch (ExecutionException e) {
+            throw new RuntimeException("Fehler während der Simulation.", e.getCause());
+
+        } finally {
+            executor.shutdown();
+        }
     }
 }
