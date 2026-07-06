@@ -90,4 +90,9 @@ public class ControlPanel extends JPanel {
     public void addStartButtonListener(ActionListener listener) {
         startButton.addActionListener(listener);
     }
+
+    public void setStatistics(double mean, double variance) {
+        meanValueLabel.setText(String.format("%.6f", mean));
+        varianceValueLabel.setText(String.format("%.6f", variance));
+    }
 }
