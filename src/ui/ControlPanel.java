@@ -12,14 +12,19 @@ import javax.swing.JTextField;
 
 public class ControlPanel extends JPanel {
 
-    private final JComboBox<String> generatorDropdown;
+    private static final String[] GENERATORS = {
+            "LCG",
+            "Middle-Square",
+            "XOR Shift",
+            "Mersenne Twister"
+    };
+
+    private final JComboBox<String> firstGeneratorDropdown;
+    private final JComboBox<String> secondGeneratorDropdown;
     private final JTextField amountField;
     private final JTextField seedField;
     private final JTextField binField;
     private final JButton startButton;
-
-    private final JLabel meanValueLabel;
-    private final JLabel varianceValueLabel;
 
     // Steuerungsbereich der GUI
     public ControlPanel() {
@@ -29,13 +34,18 @@ public class ControlPanel extends JPanel {
 
         JLabel titleLabel = new JLabel("Steuerung / Eingaben");
 
-        JLabel generatorLabel = new JLabel("Generator auswählen:");
-        generatorDropdown = new JComboBox<>(new String[]{
-                "LCG",
-                "Middle-Square",
-                "XOR Shift",
-                "Mersenne Twister"
-        });
+        JLabel firstGeneratorLabel = new JLabel("Generator 1 (Blau):");
+        firstGeneratorDropdown = new JComboBox<>(GENERATORS);
+
+        JLabel secondGeneratorLabel = new JLabel("Generator 2 (Rot):");
+        secondGeneratorDropdown = new JComboBox<>();
+
+        /*
+         * Im zweiten Menü werden nur die drei Generatoren angeboten, die nicht
+         * bereits im ersten Menü ausgewählt sind.
+         */
+        updateSecondGeneratorOptions();
+        firstGeneratorDropdown.addActionListener(e -> updateSecondGeneratorOptions());
 
         JLabel amountLabel = new JLabel("Anzahl Werte:");
         amountField = new JTextField("1000");
@@ -46,17 +56,13 @@ public class ControlPanel extends JPanel {
         JLabel binLabel = new JLabel("Histogramm-Balken:");
         binField = new JTextField("10");
 
-        startButton = new JButton("Simulation starten");
-
-        JLabel meanLabel = new JLabel("Mittelwert:");
-        meanValueLabel = new JLabel("-");
-
-        JLabel varianceLabel = new JLabel("Varianz:");
-        varianceValueLabel = new JLabel("-");
+        startButton = new JButton("Generatoren vergleichen");
 
         add(titleLabel);
-        add(generatorLabel);
-        add(generatorDropdown);
+        add(firstGeneratorLabel);
+        add(firstGeneratorDropdown);
+        add(secondGeneratorLabel);
+        add(secondGeneratorDropdown);
         add(amountLabel);
         add(amountField);
         add(seedLabel);
@@ -64,15 +70,36 @@ public class ControlPanel extends JPanel {
         add(binLabel);
         add(binField);
         add(startButton);
-
-        add(meanLabel);
-        add(meanValueLabel);
-        add(varianceLabel);
-        add(varianceValueLabel);
     }
 
-    public String getSelectedGenerator() {
-        return (String) generatorDropdown.getSelectedItem();
+    private void updateSecondGeneratorOptions() {
+        String firstGenerator = (String) firstGeneratorDropdown.getSelectedItem();
+        String previousSecondGenerator = (String) secondGeneratorDropdown.getSelectedItem();
+
+        secondGeneratorDropdown.removeAllItems();
+
+        for (String generator : GENERATORS) {
+            if (!generator.equals(firstGenerator)) {
+                secondGeneratorDropdown.addItem(generator);
+            }
+        }
+
+        /*
+         * Die bisherige zweite Auswahl bleibt erhalten, sofern sie nicht gerade
+         * als erster Generator gewählt wurde.
+         */
+        if (previousSecondGenerator != null
+                && !previousSecondGenerator.equals(firstGenerator)) {
+            secondGeneratorDropdown.setSelectedItem(previousSecondGenerator);
+        }
+    }
+
+    public String getFirstSelectedGenerator() {
+        return (String) firstGeneratorDropdown.getSelectedItem();
+    }
+
+    public String getSecondSelectedGenerator() {
+        return (String) secondGeneratorDropdown.getSelectedItem();
     }
 
     public String getAmountText() {
@@ -89,10 +116,5 @@ public class ControlPanel extends JPanel {
 
     public void addStartButtonListener(ActionListener listener) {
         startButton.addActionListener(listener);
-    }
-
-    public void setStatistics(double mean, double variance) {
-        meanValueLabel.setText(String.format("%.6f", mean));
-        varianceValueLabel.setText(String.format("%.6f", variance));
     }
 }
