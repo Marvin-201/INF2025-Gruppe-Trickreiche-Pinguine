@@ -1,22 +1,22 @@
 package ui;
 
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.event.ActionListener;
 
 public class ControlPanel extends JPanel {
 
-    private JComboBox<String> generatorDropdown;
-    private JTextField amountField;
-    private JTextField seedField;
-    private JTextField binField;
-    private JButton startButton;
+    private final JComboBox<String> generatorDropdown;
+    private final JTextField amountField;
+    private final JTextField seedField;
+    private final JTextField binField;
+    private final JButton startButton;
 
     private final JLabel meanValueLabel;
     private final JLabel varianceValueLabel;
@@ -32,7 +32,9 @@ public class ControlPanel extends JPanel {
         JLabel generatorLabel = new JLabel("Generator auswählen:");
         generatorDropdown = new JComboBox<>(new String[]{
                 "LCG",
-                "Middle-Square"
+                "Middle-Square",
+                "XOR Shift",
+                "Mersenne Twister"
         });
 
         JLabel amountLabel = new JLabel("Anzahl Werte:");
@@ -88,12 +90,4 @@ public class ControlPanel extends JPanel {
     public void addStartButtonListener(ActionListener listener) {
         startButton.addActionListener(listener);
     }
-<<<<<<< Updated upstream
-=======
-
-    public void setStatistics(double mean, double variance) {
-        meanValueLabel.setText(String.format("%.6f", mean));
-        varianceValueLabel.setText(String.format("%.6f", variance));
-    }
->>>>>>> Stashed changes
 }

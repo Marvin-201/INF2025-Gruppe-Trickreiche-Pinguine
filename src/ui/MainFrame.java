@@ -68,8 +68,20 @@ public class MainFrame extends JFrame {
              */
             String controllerGeneratorName = selectedGenerator;
 
-            if ("Middle-Square".equals(selectedGenerator)) {
+            if ("Middle-Square".equals(selectedGenerator))
+            {
                 controllerGeneratorName = "MiddleSquareGenerator";
+            }
+
+
+            if("XOR Shift".equals(selectedGenerator))
+            {
+                controllerGeneratorName = "XORShiftGenerator";
+            }
+
+            if ("Mersenne Twister".equals(selectedGenerator))
+            {
+                controllerGeneratorName = "MersenneTwister";
             }
 
             SimulationResult result = SimulationController.runSimulation(
@@ -78,6 +90,7 @@ public class MainFrame extends JFrame {
                     amount,
                     bins
             );
+
 
             histogramPanel.setHistogramData(result.getHistogramData());
             scatterPlotPanel.setScatterData(result.getCorrelation());

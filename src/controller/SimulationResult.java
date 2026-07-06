@@ -1,18 +1,20 @@
 package controller;
 
+import analysis.ScatterPoint;
+
 public class SimulationResult {
     private final double[] values;
     private final double mean;
     private final double variance;
-    private final double correlation;
+    private final ScatterPoint[] correlationData;
     private final long period;
     private final int[] histogramData;
 
-    public SimulationResult(double[] values, double mean, double variance, double correlation, long period, int[] histogramData){
+    public SimulationResult(double[] values, double mean, double variance, ScatterPoint[] correlationData, long period, int[] histogramData){
         this.values = values;
         this.mean = mean;
         this.variance = variance;
-        this.correlation = correlation;
+        this.correlationData = correlationData;
         this.period = period;
         this.histogramData = histogramData;
     }
@@ -23,7 +25,7 @@ public class SimulationResult {
 
     public double getVariance(){return variance;}
 
-    public double getCorrelation(){return correlation;}
+    public ScatterPoint[] getCorrelation(){return correlationData;}
 
     public double getPeriod(){return period;}
 

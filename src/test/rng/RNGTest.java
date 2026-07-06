@@ -3,29 +3,25 @@ package test.rng;
 import java.util.Arrays;
 import java.util.Scanner;
 
-import rng.LCG;
-import rng.MiddleSquareGenerator;
-import rng.RNG;
-import rng.RandomSequenceGenerator;
+import rng.*;
 
 public class RNGTest
 {
-    public static void main(String[] args)                          //Der RandomSequenceGenerator braucht nur ein Objekt vom Typ RNG.
-                                                                    // Ob dahinter ein LCG oder ein MiddleSquareGenerator steckt,
-                                                                    // ist egal, weil beide das Interface RNG implementieren.
+    public static void main(String[] args)                          // Der RandomSequenceGenerator braucht nur ein Objekt vom Typ RNG.
+                                                                    // Ob dahinter LCG, MiddleSquare, XORShift oder MersenneTwister
+                                                                    // steckt, ist egal, weil alle das Interface RNG implementieren.
     {
         RandomSequenceGenerator generator = new RandomSequenceGenerator();
 
         while (true)
         {
-            int zahl=0;
+            int zahl;
             System.out.println("Geben sie die Zahl ein:");
             Scanner scanner = new Scanner(System.in);
             zahl = scanner.nextInt();
 
             RNG lcg=new LCG(zahl);
             double[] lcgValues = generator.generate(lcg, 10);
-
             System.out.println(lcg.getName());
             System.out.println(Arrays.toString(lcgValues));
 
@@ -35,8 +31,20 @@ public class RNGTest
             System.out.println(middleSquare.getName());
             System.out.println(Arrays.toString(middleSquareValues));
 
+            RNG XORShift= new XORShiftGenerator(zahl);
+            double[] XORShiftGeneratorValues = generator.generate(XORShift, 10);
 
-            //Nächte Woche XORSchift
+            System.out.println(XORShift.getName());
+            System.out.println(Arrays.toString(XORShiftGeneratorValues));
+
+            RNG mersenneTwister = new MersenneTwister(zahl);
+            double[] mersenneTwisterValues = generator.generate(mersenneTwister, 10);
+
+            System.out.println(mersenneTwister.getName());
+            System.out.println(Arrays.toString(mersenneTwisterValues));
+
+
         }
+
     }
 }
