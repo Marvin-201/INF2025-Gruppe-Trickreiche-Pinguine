@@ -117,8 +117,24 @@ public class HistogramPanel extends JPanel {
             g.setColor(Color.BLACK);
             g.drawRect(x + 2, y, barWidth - 4, barHeight);
 
-            // X-Beschriftung
-            g.drawString(String.valueOf(i + 1), x + barWidth / 2 - 4, xAxisY + 18);
+            // X-Beschriftung nur bei wenigen Balken vollständig anzeigen.
+            // Bei vielen Balken wird nur jede 5., 10. oder 20. Zahl angezeigt,
+            // damit sich die Zahlen nicht überschneiden.
+            int labelStep;
+
+            if (barCount <= 20) {
+                labelStep = 1;
+            } else if (barCount <= 50) {
+                labelStep = 5;
+            } else if (barCount <= 100) {
+                labelStep = 10;
+            } else {
+                labelStep = 20;
+            }
+
+            if ((i + 1) % labelStep == 0 || i == 0 || i == barCount - 1) {
+                g.drawString(String.valueOf(i + 1), x + barWidth / 2 - 4, xAxisY + 18);
+            }
         }
     }
 }
