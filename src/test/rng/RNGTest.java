@@ -2,7 +2,6 @@ package test.rng;
 
 import java.util.Arrays;
 import java.util.Scanner;
-
 import rng.*;
 
 public class RNGTest
@@ -20,7 +19,7 @@ public class RNGTest
             Scanner scanner = new Scanner(System.in);
             zahl = scanner.nextInt();
 
-            RNG lcg=new LCG(zahl);
+            RNG lcg = new LCG(zahl);
             double[] lcgValues = generator.generate(lcg, 10);
             System.out.println(lcg.getName());
             System.out.println(Arrays.toString(lcgValues));
